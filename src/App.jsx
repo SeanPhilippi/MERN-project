@@ -31,7 +31,6 @@ class IssueFilter extends React.Component {
 
 class IssueRow extends React.Component {
   render() {
-    const borderedStyle = {border: "1px solid silver", padding: 4};
     const issue = this.props.issue;
     return (
       <tr>
@@ -54,8 +53,8 @@ class IssueTable extends React.Component {
     <IssueRow key={issue.id} issue={issue} />
       )
     return (
-      <table className="bordered-table">
-        <thread>
+      <table>
+        <thead>
           <tr>
             <th>Id</th>
             <th>Status</th>
@@ -63,9 +62,9 @@ class IssueTable extends React.Component {
             <th>Created</th>
             <th>Effort</th>
             <th>Completion Date</th>
-            <th>Title</th>
+            <th>Title</th>aaz
           </tr>
-        </thread>
+        </thead>
         <tbody>
           {issueRows}
         </tbody>
@@ -84,13 +83,50 @@ class IssueAdd extends React.Component {
 }
 
 class IssueList extends React.Component {
+  constructor() {
+    super();
+    this.state = { 
+      issues: issues: []
+    };
+    // executing createTestIssue() every 2 seconds
+    setTimeout(this.createTestIssue.bind(this), 2000);
+  }
+
+  componentDidMount() {
+    this.loadData();
+  }
+
+  loadData() {
+    setTimeout(() => {
+      this.setState({ issues: issues });
+    }, 500);
+  }
+
+  createIssue(newIssue) {
+    // storing copy of state.issues in newIssues
+    const newIssues = this.state.issues.slice();
+    newIssue.id = this.state.issues.length + 1;
+    newIssues.push(newIssue);
+    // setting issues to new issues array. 
+    this.setState({ issues: newIssues });
+  }
+
+  createTestIssue() {
+    this.createIssue({
+      status: 'New', owner: 'Pieta', created: new Date(),
+      title: 'Completion date should be optional',
+    });
+  }
+
+
   render() {
+
     return (
       <div>
         <h1>Issue Tracker</h1>
         <IssueFilter />
         <hr />
-        <IssueTable issues={issues}/>
+        <IssueTable issues={this.state.issues}/>
         <hr />
         <IssueAdd />
       </div>
